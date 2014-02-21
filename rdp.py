@@ -7,9 +7,6 @@ def pldist(x0, x1, x2):
 
 
 def rdp(M, epsilon=0, dist=pldist):
-    if M.shape[0] < 3:
-        return M
-
     dmax = 0.0
     index = -1
 
