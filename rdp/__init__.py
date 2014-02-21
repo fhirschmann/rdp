@@ -6,7 +6,7 @@ def pldist(x0, x1, x2):
                      np.linalg.norm(x2 - x1))
 
 
-def rdp(M, epsilon=0, dist=pldist):
+def _rdp(M, epsilon, dist):
     dmax = 0.0
     index = -1
 
@@ -26,5 +26,11 @@ def rdp(M, epsilon=0, dist=pldist):
         return np.vstack((M[0], M[-1]))
 
 
-def rdp_nn(seq, epsilon=0, dist=pldist):
+def _rdp_nn(seq, epsilon, dist):
     return rdp(np.array(seq), epsilon, dist).tolist()
+
+
+def rdp(M, epsilon=0, dist=pldist):
+    if "numpy" in str(type(M)):
+        return _rdp(M, epsilon, dist)
+    return _rdp_nn(M, epsilon, dist)
