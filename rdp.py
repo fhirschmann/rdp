@@ -24,3 +24,7 @@ def rdp(M, epsilon=0, dist=pldist):
         return np.vstack((r1[:-1], r2))
     else:
         return np.vstack((M[0], M[-1]))
+
+
+def rdp_nn(seq, epsilon=0, dist=pldist):
+    return rdp(np.array(seq), epsilon, dist).tolist()

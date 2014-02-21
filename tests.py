@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal as assertAE
 
-from rdp import rdp
+from rdp import rdp, rdp_nn
 
 
 class RDPTest(unittest.TestCase):
@@ -29,3 +29,6 @@ class RDPTest(unittest.TestCase):
     def test_eps1(self):
         assertAE(rdp(np.array([0, 0, 5, 1, 10, 1]).reshape(3, 2), 1),
                  np.array([0, 0, 10, 1]).reshape(2, 2))
+
+    def test_nn(self):
+        self.assertEqual(rdp_nn([[0, 0], [2, 2], [4, 4]]), [[0, 0], [4, 4]])
