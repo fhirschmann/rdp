@@ -42,7 +42,7 @@ Numpy interface:
     import numpy as np
     from rdp import rdp
 
-    rdp(np.array([1, 1, 2, 2, 3, 3, 4, 4]).reshape(4, 2)
+    rdp(np.array([1, 1, 2, 2, 3, 3, 4, 4]).reshape(4, 2))
 
 .. code:: python
 
