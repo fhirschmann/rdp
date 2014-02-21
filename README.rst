@@ -13,6 +13,13 @@ Pure Python implementation of the Ramer-Douglas-Peucker algorithm
 The Ramer-Douglas-Peucker algorithm is an algorithm for reducing the number
 of points in a curve that is approximated by a series of points.
 
+Installation
+````````````
+
+.. code:: bash
+
+    pip install rdp
+
 Usage
 `````
 
