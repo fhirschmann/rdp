@@ -7,10 +7,21 @@ Ramer-Douglas-Peucker Algorithm
 .. image:: https://badge.fury.io/py/rdp.png
    :target: http://badge.fury.io/py/rdp
 
-Pure Python implementation of the Ramer-Douglas-Peucker algorithm.
+Pure Python implementation of the Ramer-Douglas-Peucker algorithm
+(Ramer 1972; Douglas and Peucker 1973).
+
+The Ramer-Douglas-Peucker algorithm is an algorithm for reducing the number
+of points in a curve that is approximated by a series of points.
 
 Links
 `````
 
 * `GitHub Page <http://github.com/fhirschmann/rdp>`_
 * `PyPI <http://pypi.python.org/pypi/rdp>`_
+
+References
+``````````
+
+Douglas, David H, and Thomas K Peucker. 1973. “Algorithms for the Reduction of the Number of Points Required to Represent a Digitized Line or Its Caricature.” Cartographica: The International Journal for Geographic Information and Geovisualization 10 (2): 112–122.
+
+Ramer, Urs. 1972. “An Iterative Procedure for the Polygonal Approximation of Plane Curves.” Computer Graphics and Image Processing 1 (3): 244–256.
