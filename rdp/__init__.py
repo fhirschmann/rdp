@@ -23,6 +23,9 @@ def pldist(x0, x1, x2):
     :param x2: another point of the line
     :type x2: 2x1 numpy array
     """
+    if x1[0] == x2[0]:
+        return np.abs(x0[0] - x1[0])
+
     return np.divide(np.linalg.norm(np.linalg.det([x2 - x1, x1 - x0])),
                      np.linalg.norm(x2 - x1))
 
