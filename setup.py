@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="rdp",
-    version="0.4",
+    version="0.5",
     description="Pure Python implementation of the Ramer-Douglas-Peucker algorithm",
     long_description=open(path.join(path.dirname(__file__), "README.rst")).read(),
     url="http://github.com/fhirschmann/rdp",
