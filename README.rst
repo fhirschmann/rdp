@@ -35,6 +35,16 @@ Simple pythonic interface:
 
     [[1, 1], [4, 4]]
 
+With epsilon=0.5:
+
+.. code:: python
+
+    rdp([[1, 1], [1, 1.1], [2, 2]], epsilon=0.5)
+
+.. code:: python
+
+    [[1.0, 1.0], [2.0, 2.0]]
+
 Numpy interface:
 
 .. code:: python
