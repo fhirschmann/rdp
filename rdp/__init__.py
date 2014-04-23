@@ -13,7 +13,7 @@ import numpy as np
 
 def pldist(x0, x1, x2):
     """
-    Calculates the distance from the point ``x1`` to the line given
+    Calculates the distance from the point ``x0`` to the line given
     by the points ``x1`` and ``x2``.
 
     :param x0: a point
