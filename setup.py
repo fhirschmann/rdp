@@ -9,7 +9,7 @@ setup(
     long_description=open(path.join(path.dirname(__file__), "README.rst")).read(),
     url="http://github.com/fhirschmann/rdp",
     author="Fabian Hirschmann",
-    author_email="fabian@hirschm.net",
+    author_email="fabian@hirschmann.email",
     license="MIT",
     classifiers=[
         "Development Status :: 3 - Alpha",
