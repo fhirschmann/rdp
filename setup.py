@@ -6,7 +6,7 @@ setup(
     name="rdp",
     version="0.5",
     description="Pure Python implementation of the Ramer-Douglas-Peucker algorithm",
-    long_description=open(path.join(path.dirname(__file__), "README.rst")).read(),
+    long_description=open(path.join(path.dirname(__file__), "README.rst"), encoding="utf8").read(),
     url="http://github.com/fhirschmann/rdp",
     author="Fabian Hirschmann",
     author_email="fabian@hirschmann.email",
