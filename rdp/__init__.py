@@ -9,7 +9,10 @@ Pure Python implementation of the Ramer-Douglas-Peucker algorithm.
 
 """
 import numpy as np
+import sys
 
+if sys.version_info.major >= 3:
+    xrange = range
 
 def pldist(x0, x1, x2):
     """
@@ -44,6 +47,7 @@ def _rdp(M, epsilon, dist):
     dmax = 0.0
     index = -1
 
+    
     for i in xrange(1, M.shape[0]):
         d = dist(M[i], M[0], M[-1])
 
