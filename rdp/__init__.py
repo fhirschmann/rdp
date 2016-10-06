@@ -2,12 +2,13 @@
 rdp
 ~~~
 
-Pure Python implementation of the Ramer-Douglas-Peucker algorithm.
+Python implementation of the Ramer-Douglas-Peucker algorithm.
 
-:copyright: (c) 2014 Fabian Hirschmann <fabian@hirschmann.email>
+:copyright: (c) 2014-2016 Fabian Hirschmann <fabian@hirschmann.email>
 :license: MIT, see LICENSE.txt for more details.
 
 """
+from math import sqrt
 import numpy as np
 import sys
 
@@ -15,26 +16,28 @@ if sys.version_info[0] >= 3:
     xrange = range
 
 
-def pldist(x0, x1, x2):
+def pldist(point, start, end):
     """
-    Calculates the distance from the point ``x0`` to the line given
-    by the points ``x1`` and ``x2``.
+    Calculates the distance from the point ``point`` to the line given
+    by the points ``start`` and ``end``.
 
-    :param x0: a point
-    :type x0: a 2x1 numpy array
-    :param x1: a point of the line
-    :type x1: 2x1 numpy array
-    :param x2: another point of the line
-    :type x2: 2x1 numpy array
+    :param point: a point
+    :type point: a 2x1 numpy array
+    :param start: a point of the line
+    :type start: 2x1 numpy array
+    :param end: another point of the line
+    :type end: 2x1 numpy array
     """
-    if x1[0] == x2[0]:
-        return np.abs(x0[0] - x1[0])
+    if np.all(np.equal(start, end)):
+        return np.linalg.norm(point, start)
 
-    return np.divide(np.linalg.norm(np.linalg.det([x2 - x1, x1 - x0])),
-                     np.linalg.norm(x2 - x1))
+    return np.divide(
+            np.abs(np.linalg.norm(np.cross(end - start, start - point))),
+            np.linalg.norm(end - start))
 
 
-def _rdp(M, epsilon, dist):
+
+def rdp_rec(M, epsilon, dist=pldist):
     """
     Simplifies a given array of points.
 
@@ -56,29 +59,50 @@ def _rdp(M, epsilon, dist):
             dmax = d
 
     if dmax > epsilon:
-        r1 = _rdp(M[:index + 1], epsilon, dist)
-        r2 = _rdp(M[index:], epsilon, dist)
+        r1 = rdp_rec(M[:index + 1], epsilon, dist)
+        r2 = rdp_rec(M[index:], epsilon, dist)
 
         return np.vstack((r1[:-1], r2))
     else:
         return np.vstack((M[0], M[-1]))
 
 
-def _rdp_nn(seq, epsilon, dist):
-    """
-    Simplifies a given array of points.
+def _rdp_iter(points, start_index, last_index, epsilon, dist=pldist):
+    stk = []
+    stk.append([start_index, last_index])
+    global_start_index = start_index
+    bit_array = np.ones(last_index - start_index + 1, dtype=bool)
 
-    :param seq: a series of points
-    :type seq: sequence of 2-tuples
-    :param epsilon: epsilon in the rdp algorithm
-    :type epsilon: float
-    :param dist: distance function
-    :type dist: function with signature ``f(x1, x2, x3)``
-    """
-    return rdp(np.array(seq), epsilon, dist).tolist()
+    while len(stk) > 0:
+        start_index = stk[-1][0]
+        last_index = stk[-1][1]
+        stk.pop()
+
+        dmax = 0.
+        index = start_index
+
+        for i in xrange(index+1, last_index):
+            if bit_array[i - global_start_index]:
+                d = dist(points[i], points[start_index], points[last_index])
+                if d > dmax:
+                    index = i
+                    dmax = d
+        if dmax > epsilon:
+            stk.append([start_index, index])
+            stk.append([index, last_index])
+        else:
+            for i in xrange(start_index + 1, last_index):
+                bit_array[i - global_start_index] = False
+    return bit_array
 
 
-def rdp(M, epsilon=0, dist=pldist):
+def rdp_iter(points, epsilon, dist):
+    indices = _rdp_iter(points, 0, len(points) - 1, epsilon, dist)
+
+    return points[indices]
+
+
+def rdp(M, epsilon=0, dist=pldist, algo="rec"):
     """
     Simplifies a given array of points.
 
@@ -89,6 +113,13 @@ def rdp(M, epsilon=0, dist=pldist):
     :param dist: distance function
     :type dist: function with signature ``f(x1, x2, x3)``
     """
+
+    if algo == "iter":
+        algo = rdp_iter
+    elif algo == "rec":
+        algo = rdp_rec
+        
     if "numpy" in str(type(M)):
-        return _rdp(M, epsilon, dist)
-    return _rdp_nn(M, epsilon, dist)
+        return algo(M, epsilon, dist)
+
+    return algo(np.array(M), epsilon, dist).tolist()
