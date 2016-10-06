@@ -8,4 +8,4 @@ python:
 install:
   - pip install numpy
   - pip install .
-script: nosetests
+script: make tests
