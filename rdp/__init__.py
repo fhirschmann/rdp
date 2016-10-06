@@ -67,23 +67,21 @@ def rdp_rec(M, epsilon, dist=pldist):
         return np.vstack((M[0], M[-1]))
 
 
-def _rdp_iter(points, start_index, last_index, epsilon, dist=pldist):
+def _rdp_iter(M, start_index, last_index, epsilon, dist=pldist):
     stk = []
     stk.append([start_index, last_index])
     global_start_index = start_index
-    bit_array = np.ones(last_index - start_index + 1, dtype=bool)
+    indices = np.ones(last_index - start_index + 1, dtype=bool)
 
-    while len(stk) > 0:
-        start_index = stk[-1][0]
-        last_index = stk[-1][1]
-        stk.pop()
+    while stk:
+        start_index, last_index = stk.pop()
 
         dmax = 0.
         index = start_index
 
-        for i in xrange(index+1, last_index):
-            if bit_array[i - global_start_index]:
-                d = dist(points[i], points[start_index], points[last_index])
+        for i in xrange(index + 1, last_index):
+            if indices[i - global_start_index]:
+                d = dist(M[i], M[start_index], M[last_index])
                 if d > dmax:
                     index = i
                     dmax = d
@@ -92,14 +90,14 @@ def _rdp_iter(points, start_index, last_index, epsilon, dist=pldist):
             stk.append([index, last_index])
         else:
             for i in xrange(start_index + 1, last_index):
-                bit_array[i - global_start_index] = False
-    return bit_array
+                indices[i - global_start_index] = False
+    return indices
 
 
-def rdp_iter(points, epsilon, dist):
-    indices = _rdp_iter(points, 0, len(points) - 1, epsilon, dist)
+def rdp_iter(M, epsilon, dist):
+    indices = _rdp_iter(M, 0, len(M) - 1, epsilon, dist)
 
-    return points[indices]
+    return M[indices]
 
 
 def rdp(M, epsilon=0, dist=pldist, algo="rec"):
