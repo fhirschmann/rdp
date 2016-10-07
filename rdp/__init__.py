@@ -36,7 +36,6 @@ def pldist(point, start, end):
             np.linalg.norm(end - start))
 
 
-
 def rdp_rec(M, epsilon, dist=pldist):
     """
     Simplifies a given array of points.
