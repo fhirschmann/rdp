@@ -121,7 +121,7 @@ def rdp_iter(M, epsilon, dist=pldist, return_mask=False):
     return M[mask]
 
 
-def rdp(M, epsilon=0, dist=pldist, algo="rec"):
+def rdp(M, epsilon=0, dist=pldist, algo="iter"):
     """
     Simplifies a given array of points.
 
@@ -131,6 +131,8 @@ def rdp(M, epsilon=0, dist=pldist, algo="rec"):
     :type epsilon: float
     :param dist: distance function
     :type dist: function with signature ``f(x1, x2, x3)``
+    :param algo: either 'iter'ative or 'rec'ursive.
+    :type algo: string or function
     """
 
     if algo == "iter":
