@@ -98,7 +98,7 @@ def _rdp_iter(M, start_index, last_index, epsilon, dist=pldist):
     return indices
 
 
-def rdp_iter(M, epsilon, dist, return_mask=False):
+def rdp_iter(M, epsilon, dist=pldist, return_mask=False):
     """
     Simplifies a given array of points.
 
