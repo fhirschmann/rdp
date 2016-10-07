@@ -4,11 +4,12 @@ rdp
 
 Python implementation of the Ramer-Douglas-Peucker algorithm.
 
-:copyright: (c) 2014-2016 Fabian Hirschmann <fabian@hirschmann.email>
+:copyright: 2014-2016 Fabian Hirschmann <fabian@hirschmann.email>
 :license: MIT, see LICENSE.txt for more details.
 
 """
 from math import sqrt
+from functools import partial
 import numpy as np
 import sys
 
@@ -18,7 +19,7 @@ if sys.version_info[0] >= 3:
 
 def pldist(point, start, end):
     """
-    Calculates the distance from the point ``point`` to the line given
+    Calculates the distance from ``point`` to the line given
     by the points ``start`` and ``end``.
 
     :param point: a point
@@ -43,11 +44,11 @@ def rdp_rec(M, epsilon, dist=pldist):
     Recursive version.
 
     :param M: an array
-    :type M: Nx2 numpy array
+    :type M: numpy array with shape ``(n,2)``
     :param epsilon: epsilon in the rdp algorithm
     :type epsilon: float
     :param dist: distance function
-    :type dist: function with signature ``f(x1, x2, x3)``
+    :type dist: function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
     """
     dmax = 0.0
     index = -1
@@ -104,11 +105,11 @@ def rdp_iter(M, epsilon, dist=pldist, return_mask=False):
     Iterative version.
 
     :param M: an array
-    :type M: Nx2 numpy array
+    :type M: numpy array with shape ``(n,2)``
     :param epsilon: epsilon in the rdp algorithm
     :type epsilon: float
     :param dist: distance function
-    :type dist: function with signature ``f(x1, x2, x3)``
+    :type dist: function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
     :param return_mask: return the mask of points to keep instead
     :type return_mask: bool
     """
@@ -120,23 +121,59 @@ def rdp_iter(M, epsilon, dist=pldist, return_mask=False):
     return M[mask]
 
 
-def rdp(M, epsilon=0, dist=pldist, algo="iter"):
+def rdp(M, epsilon=0, dist=pldist, algo="iter", return_mask=False):
     """
-    Simplifies a given array of points.
+    Simplifies a given array of points using the Ramer-Douglas-Peucker
+    algorithm.
+
+    Example:
+
+    >>> from rdp import rdp
+    >>> rdp([[1, 1], [2, 2], [3, 3], [4, 4]])
+    [[1, 1], [4, 4]]
+
+    This is a convenience wrapper around both :func:`rdp.rdp_iter` 
+    and :func:`rdp.rdp_rec` that detects if the input is a numpy array
+    in order to adapt the output accordingly. This means that
+    when it is called using a Python list as argument, a Python
+    list is returned, and in case of an invocation using a numpy
+    array, a NumPy array is returned.
+
+    The parameter ``return_mask=True`` can be used in conjunction
+    with ``algo="iter"`` to return only the mask of points to keep. Example:
+
+    >>> from rdp import rdp
+    >>> import numpy as np
+    >>> arr = np.array([1, 1, 2, 2, 3, 3, 4, 4]).reshape(4, 2)
+    >>> arr
+    array([[1, 1],
+           [2, 2],
+           [3, 3],
+           [4, 4]])
+    >>> mask = rdp(arr, algo="iter", return_mask=True)
+    >>> mask
+    array([ True, False, False,  True], dtype=bool)
+    >>> arr[mask]
+    array([[1, 1],
+           [4, 4]])
 
     :param M: a series of points
-    :type M: either a Nx2 numpy array or sequence of 2-tuples
+    :type M: either a numpy array with shape ``(n,2)`` or sequence of 2-tuples
     :param epsilon: epsilon in the rdp algorithm
     :type epsilon: float
     :param dist: distance function
-    :type dist: function with signature ``f(x1, x2, x3)``
-    :param algo: either 'iter'ative or 'rec'ursive.
-    :type algo: string or function
+    :type dist: function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
+    :param algo: either ``iter`` for an iterative algorithm or ``rec`` for a recursive algorithm
+    :type algo: string
+    :param return_mask: return mask instead of simplified array
+    :type return_mask: bool
     """
 
     if algo == "iter":
-        algo = rdp_iter
+        algo = partial(rdp_iter, return_mask=return_mask)
     elif algo == "rec":
+        if return_mask:
+            raise NotImplementedError("return_mask=True not supported with algo=\"rec\"")
         algo = rdp_rec
         
     if "numpy" in str(type(M)):
