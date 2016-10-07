@@ -23,11 +23,11 @@ def pldist(point, start, end):
     by the points ``start`` and ``end``.
 
     :param point: a point
-    :type point: a 2x1 numpy array
+    :type point: numpy array
     :param start: a point of the line
-    :type start: 2x1 numpy array
+    :type start: numpy array
     :param end: another point of the line
-    :type end: 2x1 numpy array
+    :type end: numpy array
     """
     if np.all(np.equal(start, end)):
         return np.linalg.norm(point, start)
@@ -44,7 +44,7 @@ def rdp_rec(M, epsilon, dist=pldist):
     Recursive version.
 
     :param M: an array
-    :type M: numpy array with shape ``(n,2)``
+    :type M: numpy array
     :param epsilon: epsilon in the rdp algorithm
     :type epsilon: float
     :param dist: distance function
@@ -105,7 +105,7 @@ def rdp_iter(M, epsilon, dist=pldist, return_mask=False):
     Iterative version.
 
     :param M: an array
-    :type M: numpy array with shape ``(n,2)``
+    :type M: numpy array
     :param epsilon: epsilon in the rdp algorithm
     :type epsilon: float
     :param dist: distance function
@@ -158,7 +158,7 @@ def rdp(M, epsilon=0, dist=pldist, algo="iter", return_mask=False):
            [4, 4]])
 
     :param M: a series of points
-    :type M: either a numpy array with shape ``(n,2)`` or sequence of 2-tuples
+    :type M: numpy array with shape ``(n,d)`` where ``n`` is the number of points and ``d`` their dimension
     :param epsilon: epsilon in the rdp algorithm
     :type epsilon: float
     :param dist: distance function

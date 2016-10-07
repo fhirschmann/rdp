@@ -8,7 +8,7 @@ Ramer-Douglas-Peucker Algorithm
    :target: http://badge.fury.io/py/rdp
 
 Python/NumPy implementation of the Ramer-Douglas-Peucker algorithm
-(Ramer 1972; Douglas and Peucker 1973).
+(Ramer 1972; Douglas and Peucker 1973) for n-dimensional data (including 2D and 3D).
 
 The Ramer-Douglas-Peucker algorithm is an algorithm for reducing the number
 of points in a curve that is approximated by a series of points.
