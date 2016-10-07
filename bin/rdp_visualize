@@ -26,7 +26,7 @@ def visualize(e_min, e_max, e_0):
     pl.subplots_adjust(left=0.15, bottom=0.25)
 
     line, = pl.plot(M[:, 0], M[:, 1], 'b-')
-    line2, = pl.plot(None, None, 'ro--')
+    line2, = pl.plot(0, 0, 'ro--')
 
     pl.grid(True)
     pl.title("Ramer-Douglas-Peucker Algorithm Visualization")
