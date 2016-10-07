@@ -7,7 +7,7 @@ Ramer-Douglas-Peucker Algorithm
 .. image:: https://badge.fury.io/py/rdp.png
    :target: http://badge.fury.io/py/rdp
 
-Pure Python implementation of the Ramer-Douglas-Peucker algorithm
+Python/NumPy implementation of the Ramer-Douglas-Peucker algorithm
 (Ramer 1972; Douglas and Peucker 1973).
 
 The Ramer-Douglas-Peucker algorithm is an algorithm for reducing the number
