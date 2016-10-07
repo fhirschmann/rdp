@@ -41,6 +41,8 @@ def rdp_rec(M, epsilon, dist=pldist):
     """
     Simplifies a given array of points.
 
+    Recursive version.
+
     :param M: an array
     :type M: Nx2 numpy array
     :param epsilon: epsilon in the rdp algorithm
@@ -76,7 +78,7 @@ def _rdp_iter(M, start_index, last_index, epsilon, dist=pldist):
     while stk:
         start_index, last_index = stk.pop()
 
-        dmax = 0.
+        dmax = 0.0
         index = start_index
 
         for i in xrange(index + 1, last_index):
@@ -85,19 +87,38 @@ def _rdp_iter(M, start_index, last_index, epsilon, dist=pldist):
                 if d > dmax:
                     index = i
                     dmax = d
+
         if dmax > epsilon:
             stk.append([start_index, index])
             stk.append([index, last_index])
         else:
             for i in xrange(start_index + 1, last_index):
                 indices[i - global_start_index] = False
+
     return indices
 
 
-def rdp_iter(M, epsilon, dist):
-    indices = _rdp_iter(M, 0, len(M) - 1, epsilon, dist)
+def rdp_iter(M, epsilon, dist, return_mask=False):
+    """
+    Simplifies a given array of points.
 
-    return M[indices]
+    Iterative version.
+
+    :param M: an array
+    :type M: Nx2 numpy array
+    :param epsilon: epsilon in the rdp algorithm
+    :type epsilon: float
+    :param dist: distance function
+    :type dist: function with signature ``f(x1, x2, x3)``
+    :param return_mask: return the mask of points to keep instead
+    :type return_mask: bool
+    """
+    mask = _rdp_iter(M, 0, len(M) - 1, epsilon, dist)
+
+    if return_mask:
+        return mask
+
+    return M[mask]
 
 
 def rdp(M, epsilon=0, dist=pldist, algo="rec"):
