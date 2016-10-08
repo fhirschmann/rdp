@@ -33,6 +33,16 @@ def line(length=100):
 
     return arr.cumsum(0)
 
+@pytest.fixture
+def line3d(length=150):
+    arr = 5 * np.random.random_sample((length, 3))
+
+    return arr.cumsum(0)
+
+@pytest.fixture
+def inf():
+    return float("inf")
+
 
 def test_two():
     """
@@ -62,6 +72,14 @@ def test_diag():
     assertAE(rdp(np.array([0, 0, 1, 1, 2, 2, 3, 3, 4, 4]).reshape(5, 2)),
              np.array([0, 0, 4, 4]).reshape(2, 2))
 
+def test_3d():
+    """
+    3 dimensions.
+    """
+    assertAE(rdp(np.array([0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4])
+                 .reshape(5, 3)),
+             np.array([0, 0, 0, 4, 4, 4]).reshape(2, 3))
+
 def test_eps0():
     """
     Epsilon being to small to be simplified.
@@ -89,10 +107,21 @@ def test_nn():
     """
     assert rdp([[0, 0], [2, 2], [4, 4]]) == [[0, 0], [4, 4]]
 
-
 def test_rec_iter(line):
-    assertAE(rdp(line, algo="iter"), rdp(line, algo="rec"))
+    for e in range(0, 10):
+        assertAE(rdp(line, e * .1, algo="iter"), rdp(line, e * .1, algo="rec"))
 
+def test_rec_iter3d(line3d):
+    for e in range(0, 10):
+        assertAE(rdp(line3d, e * .1, algo="iter"), rdp(line3d, e * .1, algo="rec"))
+
+def test_inf_e(line, inf):
+    res = rdp(line, inf)
+    assert res.shape == (2, 2)
+
+def test_inf_e_3d(line3d, inf):
+    res = rdp(line3d, inf)
+    assert res.shape == (2, 3)
 
 def test_rec_iter2():
     for i in range(0, 40):

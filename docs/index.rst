@@ -13,7 +13,7 @@ The Ramer–Douglas–Peucker algorithm (RDP) is an algorithm for reducing the n
 An interactive version of this algorithm can be found in
 `this blog post <https://0x0b.de/the-ramer-douglas-peucker-algorithm.html>`_.
 
-This implementation works on :math:`n`-dimensional data with :math:`n > 1`.
+This implementation works on 2D and 3D data.
 
 Installation
 ============
