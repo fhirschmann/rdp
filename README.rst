@@ -7,6 +7,10 @@ Ramer-Douglas-Peucker Algorithm
 .. image:: https://badge.fury.io/py/rdp.png
    :target: http://badge.fury.io/py/rdp
 
+.. image:: https://readthedocs.org/projects/rdp/badge/?version=latest
+   :target: http://rdp.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 Python/NumPy implementation of the Ramer-Douglas-Peucker algorithm
 (Ramer 1972; Douglas and Peucker 1973) for 2D and 3D data.
 
@@ -62,6 +66,7 @@ Numpy interface:
 Links
 `````
 
+* `Documentation <http://rdp.readthedocs.io/en/latest/>`_
 * `GitHub Page <http://github.com/fhirschmann/rdp>`_
 * `PyPI <http://pypi.python.org/pypi/rdp>`_
 
