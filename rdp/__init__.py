@@ -30,7 +30,7 @@ def pldist(point, start, end):
     :type end: numpy array
     """
     if np.all(np.equal(start, end)):
-        return np.linalg.norm(point, start)
+        return np.linalg.norm(point - start)
 
     return np.divide(
             np.abs(np.linalg.norm(np.cross(end - start, start - point))),
