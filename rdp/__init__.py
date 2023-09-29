@@ -12,22 +12,20 @@ from math import sqrt
 from functools import partial
 import numpy as np
 import sys
+from typing import Callable
 
 if sys.version_info[0] >= 3:
     xrange = range
 
 
-def pldist(point, start, end):
+def pldist(point: np.ndarray, start: np.ndarray, end: np.ndarray) -> float:
     """
     Calculates the distance from ``point`` to the line given
     by the points ``start`` and ``end``.
 
     :param point: a point
-    :type point: numpy array
     :param start: a point of the line
-    :type start: numpy array
     :param end: another point of the line
-    :type end: numpy array
     """
     if np.all(np.equal(start, end)):
         return np.linalg.norm(point - start)
@@ -37,18 +35,15 @@ def pldist(point, start, end):
             np.linalg.norm(end - start))
 
 
-def rdp_rec(M, epsilon, dist=pldist):
+def rdp_rec(M: np.ndarray, epsilon: float, dist: Callable[[np.ndarray, np.ndarray, np.ndarray], float]=pldist) -> np.ndarray:
     """
     Simplifies a given array of points.
 
     Recursive version.
 
     :param M: an array
-    :type M: numpy array
     :param epsilon: epsilon in the rdp algorithm
-    :type epsilon: float
-    :param dist: distance function
-    :type dist: function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
+    :param dist: distance function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
     """
     dmax = 0.0
     index = -1
@@ -69,7 +64,7 @@ def rdp_rec(M, epsilon, dist=pldist):
         return np.vstack((M[0], M[-1]))
 
 
-def _rdp_iter(M, start_index, last_index, epsilon, dist=pldist):
+def _rdp_iter(M: np.ndarray, start_index: int, last_index: int, epsilon: float, dist: Callable[[np.ndarray, np.ndarray, np.ndarray], float]=pldist):
     stk = []
     stk.append([start_index, last_index])
     global_start_index = start_index
@@ -98,20 +93,16 @@ def _rdp_iter(M, start_index, last_index, epsilon, dist=pldist):
     return indices
 
 
-def rdp_iter(M, epsilon, dist=pldist, return_mask=False):
+def rdp_iter(M: np.ndarray, epsilon: Float, dist: Callable[[np.ndarray, np.ndarray, np.ndarray], float] = pldist, return_mask=False) -> np.ndarray:
     """
     Simplifies a given array of points.
 
     Iterative version.
 
     :param M: an array
-    :type M: numpy array
     :param epsilon: epsilon in the rdp algorithm
-    :type epsilon: float
-    :param dist: distance function
-    :type dist: function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
+    :param dist: distance function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
     :param return_mask: return the mask of points to keep instead
-    :type return_mask: bool
     """
     mask = _rdp_iter(M, 0, len(M) - 1, epsilon, dist)
 
@@ -121,7 +112,7 @@ def rdp_iter(M, epsilon, dist=pldist, return_mask=False):
     return M[mask]
 
 
-def rdp(M, epsilon=0, dist=pldist, algo="iter", return_mask=False):
+def rdp(M: np.ndarray, epsilon: float = 0, dist: Callable[[np.ndarray, np.ndarray, np.ndarray], float] = pldist, algo: Literal["iter", "rec"] = "iter", return_mask=False) -> np.ndarray:
     """
     Simplifies a given array of points using the Ramer-Douglas-Peucker
     algorithm.
@@ -157,16 +148,11 @@ def rdp(M, epsilon=0, dist=pldist, algo="iter", return_mask=False):
     array([[1, 1],
            [4, 4]])
 
-    :param M: a series of points
-    :type M: numpy array with shape ``(n,d)`` where ``n`` is the number of points and ``d`` their dimension
+    :param M: a series of points as numpy array with shape ``(n,d)`` where ``n`` is the number of points and ``d`` their dimension
     :param epsilon: epsilon in the rdp algorithm
-    :type epsilon: float
-    :param dist: distance function
-    :type dist: function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
+    :param dist: distance function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
     :param algo: either ``iter`` for an iterative algorithm or ``rec`` for a recursive algorithm
-    :type algo: string
     :param return_mask: return mask instead of simplified array
-    :type return_mask: bool
     """
 
     if algo == "iter":
