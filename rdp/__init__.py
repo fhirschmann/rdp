@@ -8,15 +8,16 @@ Python implementation of the Ramer-Douglas-Peucker algorithm.
 :license: MIT, see LICENSE.txt for more details.
 
 """
-from math import sqrt
 from functools import partial
 import numpy as np
 import sys
-from typing import Callable
+from typing import Callable, Literal, overload
 
 if sys.version_info[0] >= 3:
     xrange = range
 
+
+DistanceFunction = Callable[[np.ndarray, np.ndarray, np.ndarray], float]
 
 def pldist(point: np.ndarray, start: np.ndarray, end: np.ndarray) -> float:
     """
@@ -28,20 +29,20 @@ def pldist(point: np.ndarray, start: np.ndarray, end: np.ndarray) -> float:
     :param end: another point of the line
     """
     if np.all(np.equal(start, end)):
-        return np.linalg.norm(point - start)
+        return float(np.linalg.norm(point - start))
 
     return np.divide(
             np.abs(np.linalg.norm(np.cross(end - start, start - point))),
             np.linalg.norm(end - start))
 
 
-def rdp_rec(M: np.ndarray, epsilon: float, dist: Callable[[np.ndarray, np.ndarray, np.ndarray], float]=pldist) -> np.ndarray:
+def rdp_rec(M: np.ndarray, epsilon: float, dist: DistanceFunction = pldist) -> np.ndarray:
     """
     Simplifies a given array of points.
 
     Recursive version.
 
-    :param M: an array
+    :param M: an array of points, see :func:`rdp.rdp`
     :param epsilon: epsilon in the rdp algorithm
     :param dist: distance function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
     """
@@ -64,7 +65,7 @@ def rdp_rec(M: np.ndarray, epsilon: float, dist: Callable[[np.ndarray, np.ndarra
         return np.vstack((M[0], M[-1]))
 
 
-def _rdp_iter(M: np.ndarray, start_index: int, last_index: int, epsilon: float, dist: Callable[[np.ndarray, np.ndarray, np.ndarray], float]=pldist):
+def _rdp_iter(M: np.ndarray, start_index: int, last_index: int, epsilon: float, dist: DistanceFunction = pldist):
     stk = []
     stk.append([start_index, last_index])
     global_start_index = start_index
@@ -93,13 +94,13 @@ def _rdp_iter(M: np.ndarray, start_index: int, last_index: int, epsilon: float, 
     return indices
 
 
-def rdp_iter(M: np.ndarray, epsilon: Float, dist: Callable[[np.ndarray, np.ndarray, np.ndarray], float] = pldist, return_mask=False) -> np.ndarray:
+def rdp_iter(M: np.ndarray, epsilon: float, dist: DistanceFunction = pldist, return_mask=False) -> np.ndarray:
     """
     Simplifies a given array of points.
 
     Iterative version.
 
-    :param M: an array
+    :param M: an array of points, see :func:`rdp.rdp`
     :param epsilon: epsilon in the rdp algorithm
     :param dist: distance function with signature ``f(point, start, end)`` -- see :func:`rdp.pldist`
     :param return_mask: return the mask of points to keep instead
@@ -112,7 +113,7 @@ def rdp_iter(M: np.ndarray, epsilon: Float, dist: Callable[[np.ndarray, np.ndarr
     return M[mask]
 
 
-def rdp(M: np.ndarray, epsilon: float = 0.0, dist: Callable[[np.ndarray, np.ndarray, np.ndarray], float] = pldist, algo: Literal["iter", "rec"] = "iter", return_mask=False) -> np.ndarray:
+def rdp(M: np.ndarray, epsilon: float = 0.0, dist: DistanceFunction = pldist, algo: Literal["iter", "rec"] = "iter", return_mask=False) -> np.ndarray:
     """
     Simplifies a given array of points using the Ramer-Douglas-Peucker
     algorithm.
@@ -155,14 +156,17 @@ def rdp(M: np.ndarray, epsilon: float = 0.0, dist: Callable[[np.ndarray, np.ndar
     :param return_mask: return mask instead of simplified array
     """
 
+    algo_function: Callable[[np.ndarray, float, DistanceFunction], np.ndarray]
+
     if algo == "iter":
-        algo = partial(rdp_iter, return_mask=return_mask)
+        algo_function = partial(rdp_iter, return_mask=return_mask)
     elif algo == "rec":
         if return_mask:
             raise NotImplementedError("return_mask=True not supported with algo=\"rec\"")
-        algo = rdp_rec
+        algo_function = rdp_rec
         
     if "numpy" in str(type(M)):
-        return algo(M, epsilon, dist)
+        return algo_function(M, epsilon, dist)
 
-    return algo(np.array(M), epsilon, dist).tolist()
+    # This is a 'secret feature': Use the rdp function with lists of data.
+    return algo_function(np.array(M), epsilon, dist).tolist()
