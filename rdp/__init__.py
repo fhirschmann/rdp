@@ -112,7 +112,7 @@ def rdp_iter(M: np.ndarray, epsilon: Float, dist: Callable[[np.ndarray, np.ndarr
     return M[mask]
 
 
-def rdp(M: np.ndarray, epsilon: float = 0, dist: Callable[[np.ndarray, np.ndarray, np.ndarray], float] = pldist, algo: Literal["iter", "rec"] = "iter", return_mask=False) -> np.ndarray:
+def rdp(M: np.ndarray, epsilon: float = 0.0, dist: Callable[[np.ndarray, np.ndarray, np.ndarray], float] = pldist, algo: Literal["iter", "rec"] = "iter", return_mask=False) -> np.ndarray:
     """
     Simplifies a given array of points using the Ramer-Douglas-Peucker
     algorithm.
